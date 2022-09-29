@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { db } from '../firebase.config'
+import { setDoc, doc, serverTimestamp } from 'firebase/firestore'
 import { ReactComponent as ArrowRightIcon } from '../assets/svg/keyboardArrowRightIcon.svg'
 import visibilityIcon from '../assets/svg/visibilityIcon.svg'
 
@@ -40,6 +41,15 @@ function SignUp() {
       updateProfile(auth.currentUser, {
         displayName: name
       })
+
+      // (add this after registering user functionality) create new function to NOT change formData State
+      const formDataCopy = { ...formData}
+      // --> (and this) to keep the password from getting submitted to the database (removing it from the object formData)
+      delete formDataCopy.password
+      // --> (and this) add timestamp property to copy of formData (upon submission)
+      formDataCopy.timestamp = serverTimestamp()
+      // --> (yes, this too) setting a doc in DB under users with user variable (line 38), with ALL form data
+      await setDoc(doc(db, 'users', user.uid), formDataCopy)
 
       // then redirect to home page
       navigate('/')
