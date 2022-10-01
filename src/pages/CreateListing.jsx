@@ -61,11 +61,12 @@ function CreateListing() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, isMounted)
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.prevent.default()
 
         setLoading(true)
 
+    // Make sure discounted price is lower than regular!!!
     if (discountedPrice >= regularPrice) {
       setLoading(false)
       toast.error('Discounted price needs to be less than regular price')
@@ -81,7 +82,7 @@ function CreateListing() {
     let geolocation = {}
     let location
 
-    if (geolocationEnabled) {
+    if (geoLocationEnabled) {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
       )
@@ -95,6 +96,7 @@ function CreateListing() {
         data.status === 'ZERO_RESULTS'
           ? undefined
           : data.results[0]?.formatted_address
+          // The question mark validates the search for data.results[0]
 
       if (location === undefined || location.includes('undefined')) {
         setLoading(false)
@@ -104,10 +106,11 @@ function CreateListing() {
     } else {
       geolocation.lat = latitude
       geolocation.lng = longitude
+      location = address
     }
 
     
-
+    setLoading(false)
     }
 
     const onMutate = (e) => {
