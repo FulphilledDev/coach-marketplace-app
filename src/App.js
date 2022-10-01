@@ -6,11 +6,11 @@ import PrivateRoute from './components/PrivateRoute';
 import Explore from './pages/Explore';
 import Offers from './pages/Offers';
 import Category from './pages/Category';
-import CreateListing from './pages/CreateListing';
 import Profile from './pages/Profile';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import ForgotPassword from './pages/ForgotPassword';
+import CreateListing from './pages/CreateListing';
 
 function App() {
   return (
@@ -31,12 +31,10 @@ function App() {
         <Navbar />
       </Router>
 
-      <ToastContainer>
+      <ToastContainer />
 
-      </ToastContainer>
-      
-    </>
-  );
+      </>
+  )
 }
 
 export default App;

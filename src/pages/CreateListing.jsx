@@ -1,13 +1,16 @@
 import { useState, useEffect, useRef } from 'react'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import { db } from '../firebase.config'
 import { useNavigate } from 'react-router-dom'
-import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
 import {v4 as uuidv4} from 'uuid'
+import Spinner from '../components/Spinner'
+
 
 function CreateListing() {
+    // removed the 'esl...' line
     const [ geoLocationEnabled, setGeoLocationEnabled ] = useState(true)
     const [ loading, setLoading ] = useState(false)
 
@@ -62,7 +65,7 @@ function CreateListing() {
             isMounted.current = false
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, isMounted)
+    }, [isMounted])
 
     const onSubmit = async (e) => {
         e.prevent.default()
@@ -101,6 +104,7 @@ function CreateListing() {
           : data.results[0]?.formatted_address
           // The question mark validates the search for data.results[0]
 
+      // Check if location is undefined
       if (location === undefined || location.includes('undefined')) {
         setLoading(false)
         toast.error('Please enter a correct address')
@@ -109,8 +113,9 @@ function CreateListing() {
     } else {
       geolocation.lat = latitude
       geolocation.lng = longitude
-      location = address
     }
+    // After if statement, reset loading to false
+    setLoading(false) // In repository, this is also not there
 
     // Store image in firebase
     const storeImage = async (image) => {
@@ -134,9 +139,7 @@ function CreateListing() {
                 break
               case 'running':
                 console.log('Upload is running')
-                break
-              default:
-                break
+                break // In github repository: 'default: break' below   
             }
           },
           (error) => {
@@ -162,10 +165,29 @@ function CreateListing() {
       return
     })
 
-    
-    
-    setLoading(false)
+
+    const formDataCopy = {
+      ...formData,
+      imgUrls,
+      geolocation,
+      timestamp: serverTimestamp(),
     }
+
+    // Remove images and address (due to 'location': line 99, 113) from formDataCopy
+    // formDataCopy.location = address
+    formData.location = address
+    delete formDataCopy.images
+    delete formDataCopy.address
+    !formDataCopy.offer && delete formDataCopy.discountedPrice
+
+    // Now save to db
+    const docRef = await addDoc(collection(db, 'listings'), formDataCopy)
+    setLoading(false)
+    toast.success('Listing saved')
+    // This is NOT FUCKING ROUTING to the correct page... result: '/create-listing?'
+    navigate(`/category/${formDataCopy.type}/${docRef.id}`)
+    }
+    
 
     const onMutate = (e) => {
     let boolean = null
@@ -194,9 +216,9 @@ function CreateListing() {
     }
   }
 
-    if(loading) {
-        return <Spinner />
-    }
+  if(loading) {
+      return <Spinner />
+  }
     
 
   return (
