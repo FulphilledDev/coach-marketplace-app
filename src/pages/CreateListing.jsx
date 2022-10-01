@@ -74,10 +74,27 @@ function CreateListing() {
       boolean = false
     }
 
+    // Check for Files array, return images
+    if (e.target.files) {
+      setFormData((prevState) => ({
+        ...prevState,
+        images: e.target.files,
+      }))
+    }
+
+    // If its not a file field (cause it wouldnt exist)...return target value of Text/Booleans/Numbers
+    if (!e.target.files) {
+      setFormData((prevState) => ({
+        ...prevState,
+        [e.target.id]: boolean ?? e.target.value,
+      }))
+    }
+  }
+
     if(loading) {
         return <Spinner />
     }
-    }
+    
 
   return (
     <div className='profile'>
