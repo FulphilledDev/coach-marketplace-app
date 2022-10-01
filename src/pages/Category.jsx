@@ -29,21 +29,49 @@ function Category() {
                 // Execute a query
                 const querySnap = await getDocs(q)
 
-                let listings = []
+                const listings = []
 
                 querySnap.forEach((doc) => {
-                    console.log(doc.data())
+                    return listings.push({
+                        id: doc.id,
+                        data: doc.data()
+                    })
                 })
+
+                setListings(listings)
+                setLoading(false)
             } catch (error) {
-                
+                toast.error('Could not fetch listings')
             }
         }
 
         fetchListings()
-    })
+    }, [ params.categoryName])
 
   return (
-    <div>Category</div>
+    <div className='category'>
+        <header>
+            <p className="pageHeader">
+                {params.categoryName === 'rent' ? 'Places for Rent' : 'Places for Sale'}
+            </p>
+        </header>
+
+        {loading ? (
+            <Spinner />
+        ) : listings && listings.length > 0 ? (
+            <>
+            <main>
+                <ul className="categoryListings">
+                    {listings.map((listing) => (
+                        <h3 key={ listing.id }>{listing.data.name}</h3>
+                    ))}
+                </ul>
+            </main>
+            </>
+        ) : ( 
+            <p>No Listings for {params.categoryName}</p>
+        )}
+    </div>
   )
 }
 
