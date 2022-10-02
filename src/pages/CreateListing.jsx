@@ -1,6 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
+import { 
+  getStorage, 
+  ref, 
+  uploadBytesResumable, 
+  getDownloadURL 
+} from 'firebase/storage'
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import { db } from '../firebase.config'
 import { useNavigate } from 'react-router-dom'
@@ -31,20 +36,20 @@ function CreateListing() {
     })
 
     const {
-    type,
-    name,
-    bedrooms,
-    bathrooms,
-    parking,
-    furnished,
-    address,
-    offer,
-    regularPrice,
-    discountedPrice,
-    images,
-    latitude,
-    longitude,
-  } = formData
+      type,
+      name,
+      bedrooms,
+      bathrooms,
+      parking,
+      furnished,
+      address,
+      offer,
+      regularPrice,
+      discountedPrice,
+      images,
+      latitude,
+      longitude,
+    } = formData
 
     const auth = getAuth()
     const navigate = useNavigate()
@@ -64,7 +69,7 @@ function CreateListing() {
         return () => {
             isMounted.current = false
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isMounted])
 
     const onSubmit = async (e) => {
@@ -114,8 +119,9 @@ function CreateListing() {
       geolocation.lat = latitude
       geolocation.lng = longitude
     }
+    // WTF is going on....tried commenting out setLoading below....didnt work
     // After if statement, reset loading to false
-    setLoading(false) // In repository, this is also not there
+    // setLoading(false) // In repository, this is also not there
 
     // Store image in firebase
     const storeImage = async (image) => {
@@ -139,7 +145,7 @@ function CreateListing() {
                 break
               case 'running':
                 console.log('Upload is running')
-                break // In github repository: 'default: break' below
+                break
               default: 
                 break   
             }
@@ -192,22 +198,22 @@ function CreateListing() {
     
 
     const onMutate = (e) => {
-    let boolean = null
+      let boolean = null
 
-    if (e.target.value === 'true') {
-      boolean = true
-    }
-    if (e.target.value === 'false') {
-      boolean = false
-    }
+      if (e.target.value === 'true') {
+        boolean = true
+      }
+      if (e.target.value === 'false') {
+        boolean = false
+      }
 
-    // Check for Files array, return images
-    if (e.target.files) {
-      setFormData((prevState) => ({
-        ...prevState,
-        images: e.target.files,
-      }))
-    }
+      // Check for Files array, return images
+      if (e.target.files) {
+        setFormData((prevState) => ({
+          ...prevState,
+          images: e.target.files,
+        }))
+      }
 
     // If its not a file field (cause it wouldnt exist)...return target value of Text/Booleans/Numbers
     if (!e.target.files) {
@@ -252,45 +258,45 @@ function CreateListing() {
                 </div>
 
                 <label className='formLabel'>Name</label>
-          <input
-            className='formInputName'
-            type='text'
-            id='name'
-            value={name}
-            onChange={onMutate}
-            maxLength='32'
-            minLength='10'
-            required
-          />
+                <input
+                  className='formInputName'
+                  type='text'
+                  id='name'
+                  value={name}
+                  onChange={onMutate}
+                  maxLength='32'
+                  minLength='10'
+                  required
+                />
 
-          <div className='formRooms flex'>
-            <div>
-              <label className='formLabel'>Bedrooms</label>
-              <input
-                className='formInputSmall'
-                type='number'
-                id='bedrooms'
-                value={bedrooms}
-                onChange={onMutate}
-                min='1'
-                max='50'
-                required
-              />
-            </div>
-            <div>
-              <label className='formLabel'>Bathrooms</label>
-              <input
-                className='formInputSmall'
-                type='number'
-                id='bathrooms'
-                value={bathrooms}
-                onChange={onMutate}
-                min='1'
-                max='50'
-                required
-              />
-            </div>
-          </div>
+                <div className='formRooms flex'>
+                  <div>
+                    <label className='formLabel'>Bedrooms</label>
+                    <input
+                      className='formInputSmall'
+                      type='number'
+                      id='bedrooms'
+                      value={bedrooms}
+                      onChange={onMutate}
+                      min='1'
+                      max='50'
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className='formLabel'>Bathrooms</label>
+                    <input
+                      className='formInputSmall'
+                      type='number'
+                      id='bathrooms'
+                      value={bathrooms}
+                      onChange={onMutate}
+                      min='1'
+                      max='50'
+                      required
+                    />
+                  </div>
+                </div>
 
           <label className='formLabel'>Parking spot</label>
           <div className='formButtons'>
