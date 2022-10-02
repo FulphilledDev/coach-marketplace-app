@@ -10,7 +10,7 @@ import Spinner from '../components/Spinner'
 
 
 function EditListing() {
-    // removed the 'esl...' line
+    // eslint-disable-next-line
     const [ geoLocationEnabled, setGeoLocationEnabled ] = useState(true)
     const [ loading, setLoading ] = useState(false)
     const [ listing, setListing ] = useState(false)
@@ -169,7 +169,9 @@ function EditListing() {
                 break
               case 'running':
                 console.log('Upload is running')
-                break // In github repository: 'default: break' below   
+                break // In github repository: 'default: break' below
+              default:
+                break  
             }
           },
           (error) => {
