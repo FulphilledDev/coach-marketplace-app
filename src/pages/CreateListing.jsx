@@ -174,8 +174,7 @@ function CreateListing() {
     }
 
     // Remove images and address (due to 'location': line 99, 113) from formDataCopy
-    // formDataCopy.location = address
-    formData.location = address
+    formDataCopy.location = address
     delete formDataCopy.images
     delete formDataCopy.address
     !formDataCopy.offer && delete formDataCopy.discountedPrice
@@ -185,6 +184,7 @@ function CreateListing() {
     setLoading(false)
     toast.success('Listing saved')
     // This is NOT FUCKING ROUTING to the correct page... result: '/create-listing?'
+    // Attempt 1: Changed line 177 "formData.location" to "formDataCopy.location"
     navigate(`/category/${formDataCopy.type}/${docRef.id}`)
     }
     
